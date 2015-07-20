@@ -85,7 +85,7 @@ module Fog
 
         def public_url
           requires :key
-          self.collection.get_url(self.key)
+          return CarrierWave::Uploader::Base.fog_credentials[:softlayer_url_container] + self.key
         end
 
 
