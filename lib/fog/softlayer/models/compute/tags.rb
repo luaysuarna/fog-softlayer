@@ -20,11 +20,11 @@ module Fog
           super
         end
 
-        def all(filters = filters)
-          raise ArgumentError, "Filters argument for #{self.class.name}##{__method__} must be Array." unless filters.is_a?(Array)
-          self.filters = filters
+        def all(_filters = filters)
+          raise ArgumentError, "Filters argument for #{self.class.name}##{__method__} must be Array." unless _filters.is_a?(Array)
+          self.filters = _filters
           data = service.describe_tags.body
-          data.select! { |tag| filters.include?(tag) } unless filters.empty?
+          data.select! { |tag| _filters.include?(tag) } unless _filters.empty?
           load(data)
         end
 
