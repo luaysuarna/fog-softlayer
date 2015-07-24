@@ -38,6 +38,14 @@ Or install it yourself as:
 
 See `examples/`
 
+#### Add CDN to Get URL
+
+fog_credentials = {
+	:softlayer_url_container  => "http://XXXX.http.dal05.cdn.softlayer.net/Container/" # CDN
+}
+
+Eg with carrierwave gem, When you call object, you just call Model.attach.url
+
 #### Contributing
 
 See `CONTRIBUTING.md`
