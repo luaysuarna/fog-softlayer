@@ -117,7 +117,7 @@ module Fog
             params = _build_params(params)
             response = @connection.request(params)
 
-            if response.status == 401 && !!@auth_token
+            if response.status == 401
               @auth_token = nil; @auth_expires = nil
               authenticate
               response = @connection.request(params)
