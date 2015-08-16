@@ -117,11 +117,13 @@ module Fog
             params = _build_params(params)
             response = @connection.request(params)
 
-            if response.status == 401
-              @auth_token = nil; @auth_expires = nil
-              authenticate
-              response = @connection.request(params)
-            end
+            puts "========================================="
+            puts response.status
+            puts "========================================="
+
+            @auth_token = nil; @auth_expires = nil
+            authenticate
+            response = @connection.request(params)
 
             if !response.body.empty? && parse_json && response.get_header('Content-Type') =~ %r{application/json}
               response.body = Fog::JSON.decode(response.body)
