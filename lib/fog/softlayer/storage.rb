@@ -117,12 +117,6 @@ module Fog
             params = _build_params(params)
             response = @connection.request(params)
             
-            puts "============================================="
-            puts "log Response"
-            puts response.status
-            puts response.body
-            puts "============================================="
-
             if response.status == 401 || response.body == "<html><h1>Unauthorized</h1><p>This server could not verify that you are authorized to access the document you requested.</p></html>"
               @auth_token = nil; @auth_expires = nil
               authenticate
