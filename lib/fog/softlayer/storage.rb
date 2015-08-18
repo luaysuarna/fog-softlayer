@@ -117,9 +117,10 @@ module Fog
             params = _build_params(params)
             response = @connection.request(params)
             
-            if response.status == 401 || response.status == 201
+            if response.blank?
               @auth_token = nil; @auth_expires = nil
               authenticate
+              params[:headers]['X-Auth-Token'] = @auth_token
               response = @connection.request(params)
             end
 
@@ -172,23 +173,22 @@ module Fog
         end
 
         def authenticate
-          if requires_auth?
-            connection = Fog::Core::Connection.new(auth_url, false, _auth_headers)
-            response = connection.request(:method => :get)
+          connection = Fog::Core::Connection.new(auth_url, false, _auth_headers)
+          response = connection.request(:method => :get)
 
-            raise Fog::Errors::Error.new("Could not authenticate Object Storage User.") unless response.status.between?(200, 208)
+          raise Fog::Errors::Error.new("Could not authenticate Object Storage User.") unless response.status.between?(200, 208)
 
-            @auth_token = response.headers['X-Auth-Token']
-            @auth_expires = Time.now + response.headers['X-Auth-Token-Expires'].to_i
-            @storage_token = response.headers['X-Storage-Token']
+          @auth_token = response.headers['X-Auth-Token']
+          @auth_expires = Time.now + response.headers['X-Auth-Token-Expires'].to_i
+          @storage_token = response.headers['X-Storage-Token']
 
-            uri = URI.parse(response.headers['X-Storage-Url'])
-            @host   = uri.host
-            @path   = uri.path
-            @path.sub!(/\/$/, '')
-            @port   = uri.port
-            @scheme = uri.scheme
-          end
+          uri = URI.parse(response.headers['X-Storage-Url'])
+          @host   = uri.host
+          @path   = uri.path
+          @path.sub!(/\/$/, '')
+          @port   = uri.port
+          @scheme = uri.scheme
+
           true
         end
 
