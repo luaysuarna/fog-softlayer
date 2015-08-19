@@ -134,7 +134,16 @@ module Fog
               when Excon::Errors::NotFound
                 Fog::Storage::Softlayer::NotFound.slurp(error)
               else
-                error
+                @auth_token = nil; @auth_expires = nil
+                authenticate
+                params[:headers]['X-Auth-Token'] = @auth_token
+                response = @connection.request(params)
+
+                if !response.body.empty? && parse_json && response.get_header('Content-Type') =~ %r{application/json}
+                  response.body = Fog::JSON.decode(response.body)
+                end
+
+                response
             end
           end
         end
